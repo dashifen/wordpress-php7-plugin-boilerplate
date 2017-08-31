@@ -1,0 +1,24 @@
+{
+	"name": "dashifen/wordpress-plugin-boilerplate",
+	"description": "An object-oriented boilerplate for WordPress templates.",
+	"minimum-stability": "dev",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "David Dashifen Kees",
+			"email": "dashifen@dashifen.com",
+			"homepage": "https://dashifen.com",
+			"role": "developer"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Dashifen\\WPPB\\": "src"
+		}
+	},
+	"require": {
+		"php": ">=7.1",
+		"dashifen/exception": "^1"
+	}
+}
