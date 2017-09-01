@@ -1,6 +1,6 @@
 {
-	"name": "dashifen/wordpress-plugin-boilerplate",
-	"description": "An object-oriented boilerplate for WordPress templates.",
+	"name": "dashifen/wordpress-php7-plugin-boilerplate",
+	"description": "An object-oriented boilerplate for WordPress templates using features of PHP 7.1.",
 	"minimum-stability": "dev",
 	"type": "library",
 	"license": "MIT",

@@ -2,10 +2,8 @@
 
 namespace Dashifen\WPPB\Controller;
 
-use Dashifen\WPPB\Component\Backend\Activator\ActivatorInterface;
 use Dashifen\WPPB\Component\Backend\BackendInterface;
-use Dashifen\WPPB\Component\Backend\Deactivator\DeactivatorInterface;
-use Dashifen\WPPB\Component\Backend\Uninstaller\UninstallerInterface;
+use Dashifen\WPPB\Component\ComponentInterface;
 use Dashifen\WPPB\Loader\LoaderInterface;
 
 /**
@@ -44,27 +42,29 @@ abstract class AbstractController implements ControllerInterface {
 	}
 	
 	protected function defineActivationHooks() {
-		$activator = $this->getPluginActivator();
-		$deactivator = $this->getPluginDeactivator();
-		$uninstaller = $this->getPluginUninstaller();
 		$backend = $this->getPluginBackend();
 		$pluginName = $this->getPluginName();
-		
-		$this->loader->addAnonymousAction("activate_$pluginName", function() use ($backend, $activator) {
-			$backend->activate($activator);
-		});
-		
-		
+		$handlers = ["activate", "deactivate", "uninstall"];
+		foreach ($handlers as $handler) {
+			
+			// for each of our handlers, we hook an action handler to our
+			// backend component.  the purpose of the BackendInterface is
+			// to guarantee that we have three methods, one for each of
+			// these hooks.
+			
+			$hook = $handler . "_" . $pluginName;
+			$this->loader->addAction($hook, $backend, $handler);
+		}
 	}
 	
-	abstract protected function getPluginActivator(): ActivatorInterface;
-	
-	abstract protected function getPluginDeactivator(): DeactivatorInterface;
-	
-	abstract protected function getPluginUninstaller(): UninstallerInterface;
-	
+	/**
+	 * @return BackendInterface
+	 */
 	abstract protected function getPluginBackend(): BackendInterface;
 	
+	/**
+	 * @return string
+	 */
 	abstract protected function getPluginName(): string;
 	
 	/**
@@ -128,4 +128,9 @@ abstract class AbstractController implements ControllerInterface {
 	 * @return array
 	 */
 	abstract protected function getPluginDefaultSettings(): array;
+	
+	/**
+	 * @return ComponentInterface
+	 */
+	abstract protected function getPluginFrontend(): ComponentInterface;
 }

@@ -40,10 +40,6 @@ class Loader implements LoaderInterface {
 		$this->actions[] = new Hook($hook, $component, $handler, $priority, $argCount);
 	}
 	
-	public function addAnonymousAction(string $hook, callable $callback, int $priority = 10, int $argCount = 1) {
-	
-	}
-	
 	public function addFilter(string $hook, ComponentInterface $component, string $handler, int $priority = 10, int $argCount = 1): void {
 		$this->filters[] = new Hook($hook, $component, $handler, $priority, $argCount);
 	}

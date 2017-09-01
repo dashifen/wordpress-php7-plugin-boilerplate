@@ -1,33 +1,26 @@
 <?php
 
 namespace Dashifen\WPPB\Component\Backend;
-use Dashifen\WPPB\Component\Backend\Activator\ActivatorInterface;
-use Dashifen\WPPB\Component\Backend\Deactivator\DeactivatorInterface;
-use Dashifen\WPPB\Component\Backend\Uninstaller\UninstallerInterface;
+
+use Dashifen\WPPB\Component\ComponentInterface;
 
 /**
  * Interface BackendInterface
  * @package Dashifen\WPPB\Component\Backend
  */
-interface BackendInterface {
+interface BackendInterface extends ComponentInterface {
 	/**
-	 * @param ActivatorInterface $activator
-	 *
 	 * @return void
 	 */
-	public function activate(ActivatorInterface $activator): void;
+	public function activate(): void;
 	
 	/**
-	 * @param DeactivatorInterface $deactivator
-	 *
 	 * @return void
 	 */
-	public function deactivate(DeactivatorInterface $deactivator): void;
+	public function deactivate(): void;
 	
 	/**
-	 * @param UninstallerInterface $uninstaller
-	 *
 	 * @return void
 	 */
-	public function uninstall(UninstallerInterface $uninstaller): void;
+	public function uninstall(): void;
 }
