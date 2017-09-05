@@ -58,14 +58,25 @@ abstract class AbstractController implements ControllerInterface {
 	}
 	
 	/**
-	 * @return BackendInterface
+	 * @return string
 	 */
-	abstract protected function getPluginBackend(): BackendInterface;
+	abstract public function getPluginName(): string;
 	
 	/**
 	 * @return string
 	 */
-	abstract protected function getPluginName(): string;
+	public function getPluginVersion(): string {
+		return $this->version;
+	}
+	
+	/**
+	 * @param string $version
+	 *
+	 * @return void
+	 */
+	public function setPluginVersion(string $version): void {
+		$this->version = $version;
+	}
 	
 	/**
 	 * @return void
@@ -80,30 +91,14 @@ abstract class AbstractController implements ControllerInterface {
 	/**
 	 * @return void
 	 */
-	public function attachPlugin(): void {
+	public function attachHooks(): void {
 		$this->loader->attach();
-	}
-	
-	/**
-	 * @return string
-	 */
-	public function getVersion(): string {
-		return $this->version;
-	}
-	
-	/**
-	 * @param string $version
-	 *
-	 * @return void
-	 */
-	public function setVersion(string $version): void {
-		$this->version = $version;
 	}
 	
 	/**
 	 * @return array
 	 */
-	public function getSettings(): array {
+	public function getPluginSettings(): array {
 		
 		// this isn't a simple getter because we want it to more
 		// intelligently produce our plugin settings.  if our settings
@@ -133,4 +128,9 @@ abstract class AbstractController implements ControllerInterface {
 	 * @return ComponentInterface
 	 */
 	abstract protected function getPluginFrontend(): ComponentInterface;
+	
+	/**
+	 * @return BackendInterface
+	 */
+	abstract protected function getPluginBackend(): BackendInterface;
 }

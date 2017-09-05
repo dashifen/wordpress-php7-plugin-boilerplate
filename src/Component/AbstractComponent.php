@@ -6,11 +6,16 @@ use Dashifen\WPPB\Controller\ControllerInterface;
 use Dashifen\WPPB\Loader\Hook\HookInterface;
 
 /**
- * Class Plugin
+ * Class AbstractComponent
+ *
+ * This is a strange class:  it has no abstract methods but we still make
+ * it abstract.  This is to help those using this boilerplate since all of
+ * the other foundational objects within it are abstract.  That way, this
+ * isn't the only concrete class in the bunch.
  *
  * @package Dashifen\WPPB
  */
-class Component implements ComponentInterface {
+abstract class AbstractComponent implements ComponentInterface {
 	/**
 	 * @var ControllerInterface $controller
 	 */
