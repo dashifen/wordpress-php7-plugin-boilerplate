@@ -2,17 +2,17 @@
 
 namespace Dashifen\WPPB\Component\Backend;
 
+use Dashifen\WPPB\Component\AbstractComponent;
 use Dashifen\WPPB\Component\Backend\Activator\ActivatorInterface;
 use Dashifen\WPPB\Component\Backend\Deactivator\DeactivatorInterface;
 use Dashifen\WPPB\Component\Backend\Uninstaller\UninstallerInterface;
-use Dashifen\WPPB\Component\Component;
 use Dashifen\WPPB\Controller\ControllerInterface;
 
 /**
  * Class AbstractBackend
  * @package Dashifen\WPPB\Component\Backend
  */
-abstract class AbstractBackend extends Component implements BackendInterface {
+abstract class AbstractBackend extends AbstractComponent implements BackendInterface {
 	/**
 	 * @var ActivatorInterface $activator
 	 */
