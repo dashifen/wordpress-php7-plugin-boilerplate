@@ -26,8 +26,16 @@ abstract class AbstractController implements ControllerInterface {
 	 */
 	protected $settings = [];
 	
-	public function __construct(LoaderInterface $loader, bool $initHooks = true) {
+	/**
+	 * AbstractController constructor.
+	 *
+	 * @param string          $version
+	 * @param LoaderInterface $loader
+	 * @param bool            $initHooks
+	 */
+	public function __construct(string $version, LoaderInterface $loader, bool $initHooks = true) {
 		$this->loader = $loader;
+		$this->setPluginVersion($version);
 		
 		// most of the time, when we instantiate our Controller we do want
 		// to initialize our hooks.  however, when this object is used within
@@ -41,9 +49,27 @@ abstract class AbstractController implements ControllerInterface {
 		}
 	}
 	
-	protected function defineActivationHooks() {
+	/**
+	 * @return string
+	 */
+	abstract public function getPluginName(): string;
+	
+	/**
+	 * @return string
+	 */
+	public function getPluginSanitizedName(): string {
+		return strtolower(preg_replace("/\W+/", "-", $this->getPluginName()));
+	}
+	
+	/**
+	 * Defines hooks using the Backend object for the activate,
+	 * deactivate, and uninstall actions of this plugin.
+	 *
+	 * @return void
+	 */
+	protected function defineActivationHooks(): void {
 		$backend = $this->getPluginBackend();
-		$pluginName = $this->getPluginName();
+		$pluginName = $this->getPluginFilename();
 		$handlers = ["activate", "deactivate", "uninstall"];
 		foreach ($handlers as $handler) {
 			
@@ -60,7 +86,7 @@ abstract class AbstractController implements ControllerInterface {
 	/**
 	 * @return string
 	 */
-	abstract public function getPluginName(): string;
+	abstract public function getPluginFilename(): string;
 	
 	/**
 	 * @return string
@@ -117,7 +143,7 @@ abstract class AbstractController implements ControllerInterface {
 	/**
 	 * @return string
 	 */
-	abstract protected function getPluginSettingsSlug(): string;
+	abstract public function getPluginSettingsSlug(): string;
 	
 	/**
 	 * @return array
@@ -127,10 +153,10 @@ abstract class AbstractController implements ControllerInterface {
 	/**
 	 * @return ComponentInterface
 	 */
-	abstract protected function getPluginFrontend(): ComponentInterface;
+	abstract public function getPluginFrontend(): ComponentInterface;
 	
 	/**
 	 * @return BackendInterface
 	 */
-	abstract protected function getPluginBackend(): BackendInterface;
+	abstract public function getPluginBackend(): BackendInterface;
 }
