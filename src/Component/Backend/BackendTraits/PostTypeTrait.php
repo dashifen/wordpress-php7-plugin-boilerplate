@@ -1,6 +1,6 @@
 <?php
 
-namespace Dashifen\WPPB\Controller\BackendTraits;
+namespace Dashifen\WPPB\Component\Backend\BackendTraits;
 
 trait PostTypeTrait {
 	/**
