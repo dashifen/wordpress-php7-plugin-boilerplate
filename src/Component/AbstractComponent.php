@@ -99,7 +99,7 @@ abstract class AbstractComponent implements ComponentInterface {
 	 */
 	protected function hasExpectedArgCount(string $handler, int $actualArgCount): bool {
 		$expectedArgCount = $this->attachments[$handler]->getArgCount();
-		return $actualArgCount <=> $expectedArgCount === 0;
+		return $expectedArgCount === $actualArgCount;
 	}
 	
 	/**
