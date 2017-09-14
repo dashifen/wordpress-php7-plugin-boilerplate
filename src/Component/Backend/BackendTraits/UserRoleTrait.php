@@ -2,14 +2,14 @@
 
 namespace Dashifen\WPPB\Controller\BackendTraits;
 
-trait UserRoleTrait {
+trait RoleTrait {
 	/**
 	 * @return string
 	 */
-	abstract public function getUserRoleSlug(): string;
+	abstract public function getRoleSlug(): string;
 	
 	/**
 	 * @return string
 	 */
-	abstract public function getUserRoleName(): string;
+	abstract public function getRoleName(): string;
 }

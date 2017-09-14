@@ -9,49 +9,49 @@ interface ControllerInterface {
 	/**
 	 * @return string
 	 */
-	public function getPluginName(): string;
+	public function getName(): string;
 	
 	/**
 	 * @return string
 	 */
-	public function getPluginSanitizedName(): string;
+	public function getSanitizedName(): string;
 	
 	/**
 	 * @return string
 	 */
-	public function getPluginFilename(): string;
+	public function getFilename(): string;
 	
 	/**
 	 * @return string
 	 */
-	public function getPluginVersion(): string;
+	public function getVersion(): string;
 	
 	/**
 	 * @param string $version
 	 *
 	 * @return void
 	 */
-	public function setPluginVersion(string $version): void;
+	public function setVersion(string $version): void;
 	
 	/**
 	 * @return array
 	 */
-	public function getPluginSettings(): array;
+	public function getSettings(): array;
 	
 	/**
 	 * @return string
 	 */
-	public function getPluginSettingsSlug(): string;
+	public function getSettingsSlug(): string;
 	
 	/**
 	 * @return BackendInterface
 	 */
-	public function getPluginBackend(): BackendInterface;
+	public function getBackend(): BackendInterface;
 	
 	/**
 	 * @return ComponentInterface
 	 */
-	public function getPluginFrontend(): ComponentInterface;
+	public function getFrontend(): ComponentInterface;
 	
 	/**
 	 * @return void

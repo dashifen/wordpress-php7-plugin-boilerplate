@@ -6,12 +6,12 @@ trait PostTypeTrait {
 	/**
 	 * @return string
 	 */
-	abstract public function getPluginPostType(): string;
+	abstract public function getPostTypeName(): string;
 	
 	/**
 	 * @return string
 	 */
-	abstract public function getPluginPostTypeSlug(): string;
+	abstract public function getPostTypeSlug(): string;
 	
 	/**
 	 * @return void

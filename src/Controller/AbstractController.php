@@ -35,7 +35,7 @@ abstract class AbstractController implements ControllerInterface {
 	 */
 	public function __construct(string $version, LoaderInterface $loader, bool $initHooks = true) {
 		$this->loader = $loader;
-		$this->setPluginVersion($version);
+		$this->setVersion($version);
 		
 		// most of the time, when we instantiate our Controller we do want
 		// to initialize our hooks.  however, when this object is used within
@@ -52,13 +52,13 @@ abstract class AbstractController implements ControllerInterface {
 	/**
 	 * @return string
 	 */
-	abstract public function getPluginName(): string;
+	abstract public function getName(): string;
 	
 	/**
 	 * @return string
 	 */
-	public function getPluginSanitizedName(): string {
-		return strtolower(preg_replace("/\W+/", "-", $this->getPluginName()));
+	public function getSanitizedName(): string {
+		return strtolower(preg_replace("/\W+/", "-", $this->getName()));
 	}
 	
 	/**
@@ -68,8 +68,8 @@ abstract class AbstractController implements ControllerInterface {
 	 * @return void
 	 */
 	protected function defineActivationHooks(): void {
-		$backend = $this->getPluginBackend();
-		$pluginName = $this->getPluginFilename();
+		$backend = $this->getBackend();
+		$pluginName = $this->getFilename();
 		$handlers = ["activate", "deactivate", "uninstall"];
 		foreach ($handlers as $handler) {
 			
@@ -86,12 +86,12 @@ abstract class AbstractController implements ControllerInterface {
 	/**
 	 * @return string
 	 */
-	abstract public function getPluginFilename(): string;
+	abstract public function getFilename(): string;
 	
 	/**
 	 * @return string
 	 */
-	public function getPluginVersion(): string {
+	public function getVersion(): string {
 		return $this->version;
 	}
 	
@@ -100,7 +100,7 @@ abstract class AbstractController implements ControllerInterface {
 	 *
 	 * @return void
 	 */
-	public function setPluginVersion(string $version): void {
+	public function setVersion(string $version): void {
 		$this->version = $version;
 	}
 	
@@ -124,7 +124,7 @@ abstract class AbstractController implements ControllerInterface {
 	/**
 	 * @return array
 	 */
-	public function getPluginSettings(): array {
+	public function getSettings(): array {
 		
 		// this isn't a simple getter because we want it to more
 		// intelligently produce our plugin settings.  if our settings
@@ -134,29 +134,29 @@ abstract class AbstractController implements ControllerInterface {
 		// default settings exist at a minimum before returning them to
 		// the calling scope.
 		
-		$settingsSlug = $this->getPluginSettingsSlug();
+		$settingsSlug = $this->getSettingsSlug();
 		$settings = $_POST[$settingsSlug] ?? get_option($settingsSlug, []);
-		$settings = wp_parse_args($settings, $this->getPluginDefaultSettings());
+		$settings = wp_parse_args($settings, $this->getDefaultSettings());
 		return $settings;
 	}
 	
 	/**
 	 * @return string
 	 */
-	abstract public function getPluginSettingsSlug(): string;
+	abstract public function getSettingsSlug(): string;
 	
 	/**
 	 * @return array
 	 */
-	abstract protected function getPluginDefaultSettings(): array;
+	abstract protected function getDefaultSettings(): array;
 	
 	/**
 	 * @return ComponentInterface
 	 */
-	abstract public function getPluginFrontend(): ComponentInterface;
+	abstract public function getFrontend(): ComponentInterface;
 	
 	/**
 	 * @return BackendInterface
 	 */
-	abstract public function getPluginBackend(): BackendInterface;
+	abstract public function getBackend(): BackendInterface;
 }
