@@ -78,6 +78,14 @@ class Loader implements LoaderInterface {
 				
 				$arguments = $this->getAttachmentArguments($hook, $isShortcode);
 				$wpAttachFunc(...$arguments);
+				
+				// but, we also want to tell our component that we're going
+				// to be expecting it to do something.  we can do that by
+				// getting it out of our $hook and then calling its attach
+				// method.
+				
+				$component = $hook->getComponent();
+				$component->attachHook($hook);
 			}
 		}
 	}
