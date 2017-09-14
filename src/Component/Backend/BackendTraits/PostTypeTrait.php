@@ -6,7 +6,7 @@ trait PostTypeTrait {
 	/**
 	 * @return string
 	 */
-	abstract public function getPostTypeName(): string;
+	abstract public function getPostType(): string;
 	
 	/**
 	 * @return string
