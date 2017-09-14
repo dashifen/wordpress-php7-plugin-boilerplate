@@ -99,6 +99,11 @@ abstract class AbstractComponent implements ComponentInterface {
 	 */
 	protected function hasExpectedArgCount(string $handler, int $actualArgCount): bool {
 		$expectedArgCount = $this->attachments[$handler]->getArgCount();
+		
+		// as you might imagine, if we have our expected argument count,
+		// then it's equal to the actual argument count expected by this
+		// handler.
+		
 		return $expectedArgCount === $actualArgCount;
 	}
 	
@@ -110,7 +115,14 @@ abstract class AbstractComponent implements ComponentInterface {
 	 */
 	protected function getExpectedArgCountMessage(string $handler, int $actualArgCount): string {
 		$expectedArgCount = $this->attachments[$handler]->getArgCount();
-		$message = $actualArgCount <=> $expectedArgCount === -1
+		
+		// the spaceship operator, added in PHP 7.0, compares the operands
+		// and results in -1, 0, or 1 based on whether the left-hand one
+		// is less than, equal to, or greater than the right-hand one.  we
+		// know they're not equal (or we wouldn't be here), so we only have
+		// to worry about -1 and 1 as follows:
+		
+		$message = ($actualArgCount <=> $expectedArgCount) === -1
 			? "Not enough arguments for %s.  Received %d; expected %d"
 			: "Too many arguments for %s.  Received %d; expected %d";
 		
