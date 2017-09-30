@@ -2,6 +2,8 @@
 
 namespace Dashifen\WPPB\Controller\ControllerTraits;
 
+use Dashifen\WPPB\Controller\ControllerException;
+
 trait RolesTrait {
 	/**
 	 * Returns an array of the user roles added by this plugin.
@@ -41,6 +43,7 @@ trait RolesTrait {
 	
 	/**
 	 * @return void
+	 * @throws ControllerException
 	 */
 	final protected function initRolesTrait(): void {
 		
@@ -52,9 +55,34 @@ trait RolesTrait {
 		$names = $this->getRoleNames();
 		$caps = $this->getRoleCapabilities();
 		
-		add_action("init", function() use ($slugs, $names, $caps) {
+		// the adding of a role is saved in the database, so it only needs
+		// to be done when our plugin is activated.  we remove it when it's
+		// deactivated.  to do that, we need to get the plugin's filename
+		// from the controller to which we're attached.
+		
+		if (!method_exists($this, "getFilename")) {
+			throw new ControllerException("Missing method: getFilename",
+				ControllerException::MISSING_METHOD);
+		}
+		
+		$plugin = $this->getFilename();
+		add_action("activate_$plugin", function() use ($slugs, $names, $caps) {
+			
+			// when activating, we loop over our $slugs and use them to
+			// add each role to WordPress as follows:
+			
 			foreach ($slugs as $slug) {
 				add_role($slug, $names[$slug], $caps[$slug]);
+			}
+		});
+		
+		add_action("deactivate_$plugin", function() use ($slugs) {
+			
+			// conversely, when deactivating, we want to remove those roles
+			// which is even easier.
+			
+			foreach ($slugs as $slug) {
+				remove_role($slug);
 			}
 		});
 	}
