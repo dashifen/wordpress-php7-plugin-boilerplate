@@ -46,7 +46,15 @@ abstract class AbstractController implements ControllerInterface {
 			$this->defineActivationHooks();
 			$this->defineFrontendHooks();
 			$this->defineBackendHooks();
+			$this->defineTraitHooks();
 		}
+	}
+	
+	/**
+	 * @return LoaderInterface
+	 */
+	public function getLoader(): LoaderInterface {
+		return $this->loader;
 	}
 	
 	/**
@@ -80,6 +88,27 @@ abstract class AbstractController implements ControllerInterface {
 			
 			$hook = $handler . "_" . $pluginName;
 			$this->loader->addAction($hook, $backend, $handler);
+		}
+	}
+	
+	/**
+	 *
+	 *
+	 * @return void
+	 */
+	final protected function defineTraitHooks(): void {
+		
+		// some of our traits might need to add some actions or filters.
+		// those that do, have an init{Trait} method.  so, we'll get the
+		// list of traits that this class uses, and then see if we have
+		// any methods that match that pattern.  if so, we call them.
+		
+		$traits = class_uses($this);
+		foreach ($traits as $trait) {
+			$initTrait = "init" . $trait;
+			if (method_exists($this, $initTrait)) {
+				$initTrait($this);
+			}
 		}
 	}
 	

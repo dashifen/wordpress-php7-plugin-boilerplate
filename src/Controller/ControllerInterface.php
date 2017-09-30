@@ -4,6 +4,7 @@ namespace Dashifen\WPPB\Controller;
 
 use Dashifen\WPPB\Component\Backend\BackendInterface;
 use Dashifen\WPPB\Component\ComponentInterface;
+use Dashifen\WPPB\Loader\LoaderInterface;
 
 interface ControllerInterface {
 	/**
@@ -32,6 +33,11 @@ interface ControllerInterface {
 	 * @return void
 	 */
 	public function setVersion(string $version): void;
+	
+	/**
+	 * @return LoaderInterface
+	 */
+	public function getLoader(): LoaderInterface;
 	
 	/**
 	 * @return array
