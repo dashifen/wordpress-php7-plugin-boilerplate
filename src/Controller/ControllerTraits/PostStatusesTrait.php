@@ -67,25 +67,35 @@ trait PostStatusesTrait {
 						var statusSelect = $("#post_status");
 						if (statusSelect.length > 0) {
 							<?php foreach ($postStatuses as $postStatus) {
-							$text = ucwords(str_replace("-", " ", $postStatus));
-							$selected = $postStatus !== $post->post_status
-								? "false" : "true"; ?>
-
-							var option = $("<option>")
-								.prop("selected", "<?= $selected ?>")
-								.attr("value", "<?= $postStatus ?>")
-								.text("<?= $text ?>");
-
-							statusSelect.append(option);
+							
+                                // because we're foolishly mixing PHP in this
+                                // JS block, we need to be careful about how we
+                                // print our variables below.  the $text and
+                                // $postStatus variables are displayed on
+                                // screen as a part of our option, so those
+                                // have to be strings.  but, the $selected flag
+                                // doesn't need quotes because we want it to be
+                                // the Boolean value true or false, not the
+                                // strings becuase, in JS, "false" != false.
+                                
+                                $text = ucwords(str_replace("-", " ", $postStatus));
+                                $selected = $postStatus !== $post->post_status
+                                    ? "false" : "true"; ?>
+    
+                                var option = $("<option>")
+                                    .prop("selected", <?= $selected ?>)
+                                    .attr("value", "<?= $postStatus ?>")
+                                    .text("<?= $text ?>");
+    
+                                statusSelect.append(option);
 							
 							<?php } ?>
-
-							var options = $.makeArray(statusSelect.prop("options"));
-							options.sort(function (a, b) {
-								return a.text > b.text ? 1 : -1
-							});
-
-							statusSelect.html(options);
+                            
+                            // in case something else needs to do work on our
+                            // new option, we'll trigger an event here.
+                            
+                            var event = new jQuery.Event("postStatusesAdded");
+                            statusSelect.trigger(event);
 						}
 					});
 				})(jQuery);
