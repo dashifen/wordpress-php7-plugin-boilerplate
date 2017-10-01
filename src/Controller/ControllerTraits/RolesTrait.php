@@ -66,6 +66,7 @@ trait RolesTrait {
 		}
 		
 		$plugin = $this->getFilename();
+		
 		add_action("activate_$plugin", function() use ($slugs, $names, $caps) {
 			
 			// when activating, we loop over our $slugs and use them to

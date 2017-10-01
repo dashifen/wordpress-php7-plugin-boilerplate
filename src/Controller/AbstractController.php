@@ -43,10 +43,10 @@ abstract class AbstractController implements ControllerInterface {
 		// tells us what to do.
 		
 		if ($initHooks) {
+			$this->initializeTraits();
 			$this->defineActivationHooks();
 			$this->defineFrontendHooks();
 			$this->defineBackendHooks();
-			$this->defineTraitHooks();
 		}
 	}
 	
@@ -96,7 +96,7 @@ abstract class AbstractController implements ControllerInterface {
 	 *
 	 * @return void
 	 */
-	final protected function defineTraitHooks(): void {
+	protected function initializeTraits(): void {
 		
 		// some of our traits might need to add some actions or filters.
 		// those that do, have an init{Trait} method.  so, we'll get the
@@ -104,10 +104,19 @@ abstract class AbstractController implements ControllerInterface {
 		// any methods that match that pattern.  if so, we call them.
 		
 		$traits = class_uses($this);
-		foreach ($traits as $trait) {
-			$initTrait = "init" . $trait;
-			if (method_exists($this, $initTrait)) {
-				$initTrait($this);
+		foreach ($traits as $namespacedTrait) {
+			
+			// our $namespacedTrait is a Fully\Namespaced\Trait string.  we
+			// only want that last part of it.  so we'll get the location of
+			// the last \ character, add one to it, and then get  a substring
+			// of $namespacedTrait starting there.
+			
+			$lastSlashLoc = strrpos($namespacedTrait, "\\") + 1;
+			$trait = substr($namespacedTrait, $lastSlashLoc);
+			$traitInitMethod = "init" . $trait;
+
+			if (method_exists($this, $traitInitMethod)) {
+				$this->{$traitInitMethod}();
 			}
 		}
 	}
