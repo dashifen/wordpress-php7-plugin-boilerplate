@@ -96,18 +96,29 @@ trait PostStatusesTrait {
 							if (statusSelect.length > 0) {
 
 								// as long as we have a status <select> in
-								// the DOM, we'll want to add two behaviors
-								// using the functions below.  the first
-								// executs when someone clicks the OK button
-								// to select a new status.  the other is how
-								// we actually add our statuses to the
-								// <select> element.
+								// the DOM, we'll want to do some work to make
+                                // our custom statuses work.
 
+								setDisplayedStatus(statusSelect);
 								$(".save-post-status").click(setHiddenStatus);
 								addCustomStatuses(statusSelect);
 							}
 						});
-
+						
+						function setDisplayedStatus(statusSelect) {
+							var status = statusSelect.val();
+							
+							// as long as our status is in our list of custom
+                            // statuses, we want to make sure that the on-
+                            // screen display of the posts's status matches
+                            // the display of the selected option.
+                            
+                            if ($.inArray(status, statuses)) {
+                                var display = statusSelect.find("option[value=" + status + "]").text();
+                                $("#post-status-display").text(display);
+                            }
+						}
+						
 						function setHiddenStatus() {
 							var status = $("#post_status").val();
 
