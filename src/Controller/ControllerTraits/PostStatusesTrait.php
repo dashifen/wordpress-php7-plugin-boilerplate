@@ -44,64 +44,118 @@ trait PostStatusesTrait {
 		// LoaderInterface object as a result.  plus, we want these actions to
 		// "just happen" without a programmer having to think about them.
 		
+		$options = [];
 		foreach ($postStatuses as $postStatus) {
 			$args = $this->getPostStatusArguments($postStatus);
 			add_action("init", function () use ($postStatus, $args) {
 				register_post_status($postStatus, $args);
 			});
+			
+			$options[$postStatus] = $args["label"];
 		}
 		
-		add_action("post_submitbox_misc_actions", function ($post) use ($postStatuses) {
-			/** @var \WP_Post $post */
-			
-			// registering our post status tells WordPress all about it, but
-			// WordPress doesn't automatically add them to the <select> elements
-			// in the DOM (see: https://core.trac.wordpress.org/ticket/12706).
-			// so, we do that here.
-			
-			ob_start(); ?>
+		add_action("post_submitbox_misc_actions",
+			function (\WP_Post $post) use ($options) {
+				// registering our post status tells WordPress all about it,
+				// but WordPress doesn't automatically add them to the <select>
+				// elements in the DOM.  so, we do that here.  for more info
+				// see https://core.trac.wordpress.org/ticket/12706.
+				
+				$jsonOptions = "{";
+				$optionFormat = '"%s": { "display": "%s", "selected": %d },';
+				foreach ($options as $status => $display) {
+					$selected = (int)$post->post_status === $status;
+					
+					// for each of our options, we use the above format to
+					// create a series of JSON strings which we can inject
+					// into our JavaScript below.
+					
+					$jsonOptions .= sprintf($optionFormat, $status, $display, $selected);
+				}
+				
+				// the loop above adds an extra comma to our JSON string.
+				// we'll replace that comma with a the closing curly brace
+				// to end said string.
+				
+				$jsonOptions = preg_replace("/,$/", "}", $jsonOptions);
+				ob_start(); ?>
 
-            <script id="php7BoilerplateAddPostStatuses">
-				(function ($) {
-					$(document).ready(function () {
-						var statusSelect = $("#post_status");
-						if (statusSelect.length > 0) {
-							<?php foreach ($postStatuses as $postStatus) {
-							
-                                // because we're foolishly mixing PHP in this
-                                // JS block, we need to be careful about how we
-                                // print our variables below.  the $text and
-                                // $postStatus variables are displayed on
-                                // screen as a part of our option, so those
-                                // have to be strings.  but, the $selected flag
-                                // doesn't need quotes because we want it to be
-                                // the Boolean value true or false, not the
-                                // strings becuase, in JS, "false" != false.
-                                
-                                $text = ucwords(str_replace("-", " ", $postStatus));
-                                $selected = $postStatus !== $post->post_status
-                                    ? "false" : "true"; ?>
-    
-                                var option = $("<option>")
-                                    .prop("selected", <?= $selected ?>)
-                                    .attr("value", "<?= $postStatus ?>")
-                                    .text("<?= $text ?>");
-    
-                                statusSelect.append(option);
-							
-							<?php } ?>
-                            
-                            // in case something else needs to do work on our
-                            // new option, we'll trigger an event here.
-                            
-                            var event = new jQuery.Event("postStatusesAdded");
-                            statusSelect.trigger(event);
+                <script id="php7BoilerplateAddPostStatuses">
+					(function ($) {
+
+						// we'll add our statuses into the scope of this
+						// anonymous functions.  that way, it's accessible
+						// to the other functions, anonymous or otherwise,
+						// herein.  but, it won't conflict with any other
+						// variable named statuses outside this scope.
+
+						var statuses = <?= $jsonOptions ?>;
+
+						$(document).ready(function () {
+							var statusSelect = $("#post_status");
+							if (statusSelect.length > 0) {
+
+								// as long as we have a status <select> in
+								// the DOM, we'll want to add two behaviors
+								// using the functions below.  the first
+								// executs when someone clicks the OK button
+								// to select a new status.  the other is how
+								// we actually add our statuses to the
+								// <select> element.
+
+								$(".save-post-status").click(setHiddenStatus);
+								addCustomStatuses(statusSelect);
+							}
+						});
+
+						function setHiddenStatus() {
+							var status = $("#post_status").val();
+
+							// as long as the status that's selected is a part
+							// of our list of statuses, we'll want to set the
+							// the value of the #hidden_post_status field to
+							// the selected status.
+
+							if ($.inArray(status, statuses)) {
+								$("#hidden_post_status").val(status);
+							}
 						}
-					});
-				})(jQuery);
-            </script>
-			
-			<?php echo ob_get_clean();
-		});
+
+						function addCustomStatuses(statusSelect) {
+							for(status in statuses) {
+								if (statuses.hasOwnProperty(status)) {
+
+									// for each of our custom statuses, we
+									// create an <option>.  if our status is
+									// selected, then we set that property.
+									// otherwise, we set various attributes
+									// and then append it to our <select>
+									// element.
+
+									var option = $("<option>")
+										.prop("selected", statuses[status].selected)
+										.text(statuses[status].display)
+										.attr("value", status)
+										.data("custom", true);
+
+									statusSelect.append(option);
+								}
+							}
+
+							// in case we need to do anything else after we've
+							// changed the DOM, we fire this event, too.  then,
+							// other JS can watch for it and handle any clean
+							// up or whatever when it's caught.
+
+							var event = new jQuery.Event("postStatusesAdded");
+							statusSelect.trigger(event);
+						}
+					})(jQuery);
+                </script>
+				
+				<?php echo ob_get_clean();
+				
+			}
+		);
 	}
 }
