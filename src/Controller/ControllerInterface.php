@@ -45,6 +45,14 @@ interface ControllerInterface {
 	public function getSettings(): array;
 	
 	/**
+	 * @param string $setting
+	 *
+	 * @return mixed
+	 * @throws ControllerException
+	 */
+	public function getSetting(string $setting);
+	
+	/**
 	 * @return string
 	 */
 	public function getSettingsSlug(): string;

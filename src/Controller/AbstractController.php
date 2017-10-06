@@ -179,6 +179,25 @@ abstract class AbstractController implements ControllerInterface {
 	}
 	
 	/**
+	 * @param string $setting
+	 *
+	 * @return mixed
+	 * @throws ControllerException
+	 */
+	public function getSetting(string $setting) {
+		$settings = $this->getSettings();
+		$keys = array_keys($settings);
+		
+		if (!in_array($setting, $keys)) {
+			throw new ControllerException("Unknown setting: $setting.",
+				ControllerException::UNKNOWN_SETTING);
+		}
+		
+		return $settings[$setting];
+	}
+	
+	
+	/**
 	 * @return string
 	 */
 	abstract public function getSettingsSlug(): string;
