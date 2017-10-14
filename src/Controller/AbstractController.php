@@ -43,6 +43,7 @@ abstract class AbstractController implements ControllerInterface {
 		// tells us what to do.
 		
 		if ($initHooks) {
+			$this->initializeI18n();
 			$this->initializeTraits();
 			$this->defineActivationHooks();
 			$this->defineFrontendHooks();
@@ -70,26 +71,9 @@ abstract class AbstractController implements ControllerInterface {
 	}
 	
 	/**
-	 * Defines hooks using the Backend object for the activate,
-	 * deactivate, and uninstall actions of this plugin.
-	 *
 	 * @return void
 	 */
-	protected function defineActivationHooks(): void {
-		$backend = $this->getBackend();
-		$pluginName = $this->getFilename();
-		$handlers = ["activate", "deactivate", "uninstall"];
-		foreach ($handlers as $handler) {
-			
-			// for each of our handlers, we hook an action handler to our
-			// backend component.  the purpose of the BackendInterface is
-			// to guarantee that we have three methods, one for each of
-			// these hooks.
-			
-			$hook = $handler . "_" . $pluginName;
-			$this->loader->addAction($hook, $backend, $handler);
-		}
-	}
+	abstract protected function initializeI18n(): void;
 	
 	/**
 	 *
@@ -118,6 +102,28 @@ abstract class AbstractController implements ControllerInterface {
 			if (method_exists($this, $traitInitMethod)) {
 				$this->{$traitInitMethod}();
 			}
+		}
+	}
+	
+	/**
+	 * Defines hooks using the Backend object for the activate,
+	 * deactivate, and uninstall actions of this plugin.
+	 *
+	 * @return void
+	 */
+	protected function defineActivationHooks(): void {
+		$backend = $this->getBackend();
+		$pluginName = $this->getFilename();
+		$handlers = ["activate", "deactivate", "uninstall"];
+		foreach ($handlers as $handler) {
+			
+			// for each of our handlers, we hook an action handler to our
+			// backend component.  the purpose of the BackendInterface is
+			// to guarantee that we have three methods, one for each of
+			// these hooks.
+			
+			$hook = $handler . "_" . $pluginName;
+			$this->loader->addAction($hook, $backend, $handler);
 		}
 	}
 	
