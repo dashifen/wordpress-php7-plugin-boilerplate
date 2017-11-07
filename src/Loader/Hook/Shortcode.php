@@ -22,7 +22,12 @@ class Shortcode extends Hook {
 	 * @throws HookException
 	 */
 	public function getArgCount(): int {
-		throw new HookException("Shortcodes don't use argument counts.",
-			HookException::SHORTCODE_ARGCOUNT_CALL);
+		
+		// shortcodes always have three parameters:  the shortcode's
+		// attributes, the content between the shortcode tags, and the
+		// name of the shortcode.  we may not need to use all three of
+		// them, but we'll always pass them to the calling scope.
+		
+		return 3;
 	}
 }
