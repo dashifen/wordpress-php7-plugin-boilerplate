@@ -58,14 +58,14 @@ interface ControllerInterface {
 	public function getSettingsSlug(): string;
 	
 	/**
-	 * @return BackendInterface
+	 * @return BackendInterface|null
 	 */
-	public function getBackend(): BackendInterface;
+	public function getBackend(): ?BackendInterface;
 	
 	/**
-	 * @return ComponentInterface
+	 * @return ComponentInterface|null
 	 */
-	public function getFrontend(): ComponentInterface;
+	public function getFrontend(): ?ComponentInterface;
 	
 	/**
 	 * @return void
