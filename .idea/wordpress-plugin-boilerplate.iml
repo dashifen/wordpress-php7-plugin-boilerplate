@@ -7,19 +7,5 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library name="PHP" type="php">
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/composer" />
-          <root url="file://$MODULE_DIR$/vendor/dashifen/exception" />
-          <root url="file://$MODULE_DIR$/../../../sites/dashifen.com" />
-        </CLASSES>
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/composer" />
-          <root url="file://$MODULE_DIR$/vendor/dashifen/exception" />
-          <root url="file://$MODULE_DIR$/../../../sites/dashifen.com" />
-        </SOURCES>
-      </library>
-    </orderEntry>
   </component>
 </module>

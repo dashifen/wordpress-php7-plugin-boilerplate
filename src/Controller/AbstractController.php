@@ -5,6 +5,7 @@ namespace Dashifen\WPPB\Controller;
 use Dashifen\WPPB\Component\Backend\BackendInterface;
 use Dashifen\WPPB\Component\ComponentInterface;
 use Dashifen\WPPB\Loader\LoaderInterface;
+use Dashifen\WPPB\Loader\LoaderException;
 
 /**
  * Class Controller
@@ -160,6 +161,7 @@ abstract class AbstractController implements ControllerInterface {
 	
 	/**
 	 * @return void
+	 * @throws LoaderException
 	 */
 	public function attachHooks(): void {
 		$this->loader->attach();
@@ -214,12 +216,21 @@ abstract class AbstractController implements ControllerInterface {
 	abstract protected function getDefaultSettings(): array;
 	
 	/**
-	 * @return ComponentInterface
+	 * @return ComponentInterface|null
+	 *
+	 *
 	 */
-	abstract public function getFrontend(): ComponentInterface;
+	abstract public function getFrontend(): ?ComponentInterface;
 	
 	/**
-	 * @return BackendInterface
+	 * @return BackendInterface|null
+	 *
+	 * this method either returns an object implementing the BackendInterface
+	 * or null.  we allow null because we might be making something that
+	 * doesn't interact at all with the WordPress backend, like a series of
+	 * filters.
 	 */
-	abstract public function getBackend(): BackendInterface;
+	abstract public function getBackend(): ?BackendInterface;
+	
+	
 }
